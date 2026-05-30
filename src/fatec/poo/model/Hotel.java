@@ -1,0 +1,74 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package fatec.poo.model;
+
+/**
+ *
+ * @author artpl
+ */
+public class Hotel {
+
+  private int codigo;
+  private String nome, endereco, telefone;
+  private double valorDiaria, totalFaturamento;
+
+  // ===== CONSTRUTOR =====
+
+  public Hotel(int codigo, String nome) {
+    this.codigo = codigo;
+    this.nome = nome;
+  }
+
+  // ===== GETTERS ====
+
+  public int getCodigo() {
+    return codigo;
+  }
+
+  public String getNome() {
+    return nome;
+  }
+
+  public String getEndereco() {
+    return endereco;
+  }
+
+  public String getTelefone() {
+    return telefone;
+  }
+
+  public double getValorDiaria() {
+    return valorDiaria;
+  }
+
+  public double getTotalFaturamento() {
+    return totalFaturamento;
+  }
+
+  // ===== SETTERS ====
+
+  public void setNome(String nome) {
+    this.nome = nome;
+  }
+
+  public void setEndereco(String endereco) {
+    this.endereco = endereco;
+  }
+
+  public void setTelefone(String telefone) {
+    this.telefone = telefone;
+  }
+
+  public void setValorDiaria(double valorDiaria) {
+    this.valorDiaria = valorDiaria;
+  }
+
+  // ===== METODOS =====
+
+  public void addValorHospedagem(double valor) {
+    this.totalFaturamento += valor;
+  }
+}
