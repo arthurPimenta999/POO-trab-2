@@ -50,6 +50,6 @@ public class Reserva {
   // ===== METODOS =====
 
   public double encerrarReserva(Data dataSaida) {
-    return valorHosped = diaria * periodo;
+    return valorHosped;
   }
 }
