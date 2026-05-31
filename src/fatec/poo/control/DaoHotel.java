@@ -20,12 +20,21 @@ public class DaoHotel {
     public DaoHotel(Connection conn) {
          this.conn = conn;
     }  
-    public Hotel consultar (int ra) {
+    public Hotel consultar (int codigo) {
         Hotel objHotel = null;         
        
         PreparedStatement ps;
         try {
-            ps = conn.prepareStatement("qry");
+            ps = conn.prepareStatement("SELECT * from tblHotel where Codigo_Hot = ?");
+            ps.setInt(1, codigo);
+            ResultSet rs = ps.executeQuery();
+           
+            if (rs.next()) {
+                objHotel = new Hotel(rs.getInt("Codigo_Hot"),rs.getString("Nome_Hot"));
+                objHotel.setEndereco("Endereco_Hot");
+                objHotel.setTelefone("Telefone_Hot");
+                objHotel.setValorDiaria(rs.getDouble("TotalFaturamento_Hot"));
+            }
         }
         catch (SQLException ex) { 
              System.out.println(ex.toString());   
@@ -33,29 +42,48 @@ public class DaoHotel {
         return(objHotel);
     }    
      
-    public void inserir(Hotel hotel) {
+    public void inserir(Hotel objHotel) {
         PreparedStatement ps;
         try {
-             ps = conn.prepareStatement("qry");
+            ps = conn.prepareStatement("INSERT INTO tblHotel(Codigo_Hot, Nome_Hot, Endereco_Hot, Telefone_Hot, TotalFaturamento_Hot) VALUES(?,?,?,?,?)");
+            ps.setInt(1, objHotel.getCodigo());
+            ps.setString(2, objHotel.getNome());
+            ps.setString(3, objHotel.getEndereco());
+            ps.setString(4, objHotel.getTelefone());
+            ps.setDouble(4,objHotel.getValorDiaria());
+                      
+            ps.execute(); //envia a instrução SQL para o SGBD
         } catch (SQLException ex) {
              System.out.println(ex.toString());   
         }
     }  
     
     public void alterar(Hotel hotel) {
-        PreparedStatement ps;
+       PreparedStatement ps;
         try {
-             ps = conn.prepareStatement("qry");
+            ps = conn.prepareStatement("UPDATE tblHotel set Nome_Hot = ?, " +
+                                       "Endereco_Hot = ? " +
+                                       "Telefone_Hot = ? " + 
+                                        "TotalFaturamento_Hot = ? " + 
+                                       "where Codigo_Hot = ?");
+            
+            ps.setString(1, hotel.getNome());
+            ps.setString(2, hotel.getEndereco());
+            ps.setString(3, hotel.getTelefone());
+            ps.setDouble(4, hotel.getValorDiaria());
+           
+            ps.execute(); //Envia a instrução SQL para o SGBD
         } catch (SQLException ex) {
              System.out.println(ex.toString());   
         }
     }
     
     public void excluir(Hotel hotel) {
-        PreparedStatement ps;
+         PreparedStatement ps;
         try {
-            ps = conn.prepareStatement("qry");
+            ps = conn.prepareStatement("DELETE FROM tblHotel where Codigo_Hot = ?");
             
+            ps.setInt(1, hotel.getCodigo());
                       
             ps.execute(); //Envia a instrução SQL para o SGBD
         } catch (SQLException ex) {
