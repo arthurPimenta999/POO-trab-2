@@ -7,6 +7,7 @@ package fatec.poo.control;
 import fatec.poo.model.Reserva;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
@@ -22,12 +23,15 @@ public class DaoReserva {
         return;
     }
     
-    public Reserva consultar (int ra) {
+    public Reserva consultar (int codigo) {
         Reserva objReserva = null;         
        
         PreparedStatement ps;
         try {
-            ps = conn.prepareStatement("qry");
+            ps = conn.prepareStatement("SELECT * from tblReserva where Codigo_Res = ?");
+            ps.setInt(1, codigo);
+            ResultSet rs = ps.executeQuery();
+           
         }
         catch (SQLException ex) { 
              System.out.println(ex.toString());   
@@ -35,10 +39,13 @@ public class DaoReserva {
         return(objReserva);
     }    
      
-    public void inserir(Reserva reserva) {
+    public void inserir(Reserva objReserva) {
         PreparedStatement ps;
         try {
-             ps = conn.prepareStatement("qry");
+            ps = conn.prepareStatement("INSERT INTO tblReserva(Codigo_Hot, Nome_Hot, Endereco_Hot, Telefone_Hot, TotalFaturamento_Hot) VALUES(?,?,?,?,?)");
+            
+            ps.execute(); //envia a instrução SQL para o SGBD
+
         } catch (SQLException ex) {
              System.out.println(ex.toString());   
         }
@@ -47,7 +54,15 @@ public class DaoReserva {
     public void alterar(Reserva reserva) {
         PreparedStatement ps;
         try {
-             ps = conn.prepareStatement("qry");
+             ps = conn.prepareStatement("UPDATE tblReserva set Nome_Hot = ?, " +
+                                       "Endereco_Hot = ? " +
+                                       "Telefone_Hot = ? " + 
+                                        "TotalFaturamento_Hot = ? " + 
+                                       "where Codigo_Hot = ?");
+            
+      
+           
+            ps.execute(); //Envia a instrução SQL para o SGBD
         } catch (SQLException ex) {
              System.out.println(ex.toString());   
         }
@@ -56,9 +71,9 @@ public class DaoReserva {
     public void excluir(Reserva reserva) {
         PreparedStatement ps;
         try {
-            ps = conn.prepareStatement("qry");
+             ps = conn.prepareStatement("DELETE FROM tblReserva where Codigo_Hot = ?");
             
-                      
+            ps.setInt(1, reserva.getCodigo());
             ps.execute(); //Envia a instrução SQL para o SGBD
         } catch (SQLException ex) {
              System.out.println(ex.toString());   
