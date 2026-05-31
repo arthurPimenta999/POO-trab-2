@@ -58,6 +58,8 @@ public class GuiCadastroReservas extends javax.swing.JFrame {
 
         jLabel2.setText("Código Reserva");
 
+        txtCodReserva.setEnabled(false);
+
         btnConsultarHotel.setText("Consultar Hotel");
         btnConsultarHotel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -81,7 +83,13 @@ public class GuiCadastroReservas extends javax.swing.JFrame {
             }
         });
 
+        jTextField1.setEnabled(false);
+
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Check In"));
+
+        txtNomeHospede.setEnabled(false);
+
+        txtDataEntry.setEnabled(false);
 
         jLabel3.setText("Nome Hóspede");
 
@@ -122,6 +130,12 @@ public class GuiCadastroReservas extends javax.swing.JFrame {
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Check Out"));
+
+        txtDataSaida.setEnabled(false);
+
+        txtQtdDias.setEnabled(false);
+
+        txtValHospedagem.setEnabled(false);
 
         jLabel5.setText("Data Saída(dd/mm/aaaa)");
 
@@ -233,16 +247,22 @@ public class GuiCadastroReservas extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {                                  
+       prepCon = new PreparaConexao("dimas","Objetopo");
+       prepCon.setDriver("oracle.jdbc.driver.OracleDriver");
+       prepCon.setConnectionString("jdbc:oracle:thin:@192.168.1.6:1521:xe");
+       daoReserva = new DaoReserva(prepCon.abrirConexao());        
+    }  
     private void btnSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSairActionPerformed
         dispose();
     }//GEN-LAST:event_btnSairActionPerformed
 
     private void btnConsultarHotelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarHotelActionPerformed
         // TODO add your handling code here:
-         hotel = null;         
-        hotel = daoHotel.consultar(txtCodHotel.getText());
+         reserva = null;         
+        //reserva = daoReserva.consultar(txtCodHotel.getText());
         
-        if (hotel == null) {//não encontrou o objeto na BD
+        if (reserva == null) {//não encontrou o objeto na BD
             txtCodHotel.setEnabled(false);
             txtCodReserva.setEnabled(true);
             txtNomeHospede.setEnabled(true);            
@@ -323,4 +343,7 @@ public class GuiCadastroReservas extends javax.swing.JFrame {
     private javax.swing.JTextField txtQtdDias;
     private javax.swing.JTextField txtValHospedagem;
     // End of variables declaration//GEN-END:variables
+    private Reserva reserva; 
+    private DaoReserva daoReserva;   
+    private PreparaConexao prepCon;   
 }
