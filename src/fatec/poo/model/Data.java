@@ -41,34 +41,24 @@ public class Data {
     return dia + "/" + mes + "/" + ano;
   }
 
-  public int subtrairDatas(Data dataFinal) {
-    int dias1 = this.dia + this.mes * 30 + this.ano * 365;
-    int dias2 = dataFinal.dia + dataFinal.mes * 30 + dataFinal.ano * 365;
+  public int calcDiasCorridos() {
+    boolean isBissexto = (ano % 4 == 0 && ano % 100 != 0) || (ano % 400 == 0);
+    int[] diasDosMeses = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+    int somaMesesAnteriores = 0;
+    for (int i = 0; i < mes - 1 - 1; i++) {
+      somaMesesAnteriores += diasDosMeses[i];
+    }
 
-    return dias1 - dias2;
+    double totalDias = ((ano - 1) - 1900) * 365.25 + somaMesesAnteriores + dia;
+
+    if (isBissexto && mes > 2) {
+      totalDias += 1;
+    }
+
+    return (int) totalDias;
   }
 
-  public double calcDiasCorridos(Data data) {
-    // !tratamento de exceção pra ano bissexto
-    boolean condicao1 = data.ano % 4 == 0;
-    boolean condicao2 = data.ano % 100 != 0;
-    boolean condicao3 = data.ano % 400 == 0;
-
-    boolean isBissexto = (condicao1 && condicao2) || condicao3;
-
-    double contagemDias = ((data.ano - 1) - 1900) * 365.25 + data.dia;
-
-    // !calculo da data retornada de fato
-    int[] numeroDias = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
-
-    for (int i = 0; i < data.mes - 1; i++) {
-      contagemDias += numeroDias[i];
-    }
-
-    if (isBissexto && data.mes > 2) {
-      contagemDias += 1;
-    }
-
-    return contagemDias;
+  public int subtrairDatas(Data dataInicial) {
+    return this.calcDiasCorridos() - dataInicial.calcDiasCorridos();
   }
 }
