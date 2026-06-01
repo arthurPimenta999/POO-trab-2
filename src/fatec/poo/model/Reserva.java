@@ -16,6 +16,7 @@ public class Reserva {
   private Data dataEntrada;
   private Data dataSaida;
   private double valorHosped;
+  private Hotel hotel;
 
   // ===== CONSTRUTOR =====
 
@@ -50,6 +51,12 @@ public class Reserva {
   // ===== METODOS =====
 
   public double encerrarReserva(Data dataSaida) {
+    double diaria = hotel.getValorDiaria();
+    int periodo = this.dataSaida.subtrairDatas(dataEntrada);
+    valorHosped = diaria * periodo;
+
+    hotel.addValorHospedagem(valorHosped);
+
     return valorHosped;
   }
 }

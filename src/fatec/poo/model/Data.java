@@ -41,18 +41,34 @@ public class Data {
     return dia + "/" + mes + "/" + ano;
   }
 
-  public int calcDiasCorridos(Data dataFinal) {
-    return (
-      (dataFinal.dia - this.dia) +
-      (dataFinal.mes - this.mes) * 30 +
-      (dataFinal.ano - this.ano) * 365
-    );
-  }
-
   public int subtrairDatas(Data dataFinal) {
     int dias1 = this.dia + this.mes * 30 + this.ano * 365;
     int dias2 = dataFinal.dia + dataFinal.mes * 30 + dataFinal.ano * 365;
 
     return dias1 - dias2;
+  }
+
+  public double calcDiasCorridos(Data data) {
+    // !tratamento de exceção pra ano bissexto
+    boolean condicao1 = data.ano % 4 == 0;
+    boolean condicao2 = data.ano % 100 != 0;
+    boolean condicao3 = data.ano % 400 == 0;
+
+    boolean isBissexto = (condicao1 && condicao2) || condicao3;
+
+    double contagemDias = ((data.ano - 1) - 1900) * 365.25 + data.dia;
+
+    // !calculo da data retornada de fato
+    int[] numeroDias = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+
+    for (int i = 0; i < data.mes - 1; i++) {
+      contagemDias += numeroDias[i];
+    }
+
+    if (isBissexto && data.mes > 2) {
+      contagemDias += 1;
+    }
+
+    return contagemDias;
   }
 }
