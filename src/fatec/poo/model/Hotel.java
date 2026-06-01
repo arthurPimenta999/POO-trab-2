@@ -5,6 +5,8 @@
  */
 package fatec.poo.model;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author artpl
@@ -14,6 +16,7 @@ public class Hotel {
   private int codigo;
   private String nome, endereco, telefone;
   private double valorDiaria, totalFaturamento;
+  private ArrayList<Reserva> reservas; 
 
   // ===== CONSTRUTOR =====
 

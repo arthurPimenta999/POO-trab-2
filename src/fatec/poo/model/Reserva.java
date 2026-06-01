@@ -16,6 +16,7 @@ public class Reserva {
   private Data dataEntrada;
   private Data dataSaida;
   private double valorHosped;
+  private Hotel hotel;
 
   // ===== CONSTRUTOR =====
 

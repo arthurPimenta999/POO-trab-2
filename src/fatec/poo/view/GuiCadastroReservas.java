@@ -259,8 +259,8 @@ public class GuiCadastroReservas extends javax.swing.JFrame {
 
     private void btnConsultarHotelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarHotelActionPerformed
         // TODO add your handling code here:
-         reserva = null;         
-        //reserva = daoReserva.consultar(txtCodHotel.getText());
+        reserva = null;         
+        reserva = daoReserva.consultar(Integer.parseInt(txtCodHotel.getText()));
         
         if (reserva == null) {//não encontrou o objeto na BD
             txtCodHotel.setEnabled(false);
@@ -272,6 +272,7 @@ public class GuiCadastroReservas extends javax.swing.JFrame {
             btnCheckIn.setEnabled(true);
             btnCheckOut.setEnabled(true);
         } else {//encontrou o objeto na BD
+            txtNomeHospede.setText(reserva.getNomeHosp());
             txtCodHotel.setEnabled(false);
             txtCodReserva.setEnabled(true);
             txtNomeHospede.setEnabled(true);            

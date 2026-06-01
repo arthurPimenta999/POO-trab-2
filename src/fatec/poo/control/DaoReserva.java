@@ -18,9 +18,6 @@ public class DaoReserva {
     private Connection conn;
     public DaoReserva(Connection conn) {
          this.conn = conn;
-    }  
-    public void consultar(String s){ 
-        return;
     }
     
     public Reserva consultar (int codigo) {

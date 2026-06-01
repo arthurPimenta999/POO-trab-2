@@ -31,9 +31,10 @@ public class DaoHotel {
            
             if (rs.next()) {
                 objHotel = new Hotel(rs.getInt("Codigo_Hot"),rs.getString("Nome_Hot"));
-                objHotel.setEndereco("Endereco_Hot");
-                objHotel.setTelefone("Telefone_Hot");
+                objHotel.setEndereco(rs.getString("Endereco_Hot"));
+                objHotel.setTelefone(rs.getString("Telefone_Hot"));
                 objHotel.setValorDiaria(rs.getDouble("TotalFaturamento_Hot"));
+                objHotel.addValorHospedagem(rs.getDouble("TotalFaturamento_Hot"));
             }
         }
         catch (SQLException ex) { 
@@ -50,7 +51,7 @@ public class DaoHotel {
             ps.setString(2, objHotel.getNome());
             ps.setString(3, objHotel.getEndereco());
             ps.setString(4, objHotel.getTelefone());
-            ps.setDouble(4,objHotel.getValorDiaria());
+            ps.setDouble(5,objHotel.getValorDiaria());
                       
             ps.execute(); //envia a instrução SQL para o SGBD
         } catch (SQLException ex) {

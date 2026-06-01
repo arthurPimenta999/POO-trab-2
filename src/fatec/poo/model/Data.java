@@ -11,7 +11,8 @@ package fatec.poo.model;
  */
 public class Data {
 
-  private int dia, mes, ano;
+  private int dia, mes;
+  public int ano;
 
   // ===== CONSTRUTOR =====
 

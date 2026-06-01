@@ -4,7 +4,7 @@
  */
 package fatec.poo.view;
 
-import fatec.poo.control.DaoReserva;
+import fatec.poo.control.DaoHotel;
 import fatec.poo.control.PreparaConexao;
 import fatec.poo.model.Hotel;
 import javax.swing.JOptionPane;
@@ -21,7 +21,9 @@ public class GuiCadastroHotel extends javax.swing.JFrame {
     public GuiCadastroHotel() {
         initComponents();
     }
-
+      
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -50,6 +52,11 @@ public class GuiCadastroHotel extends javax.swing.JFrame {
         btnExcluir = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         jLabel1.setText("Código");
 
@@ -192,17 +199,24 @@ public class GuiCadastroHotel extends javax.swing.JFrame {
                     .addComponent(btnAlterar)
                     .addComponent(btnExcluir)
                     .addComponent(btnSair))
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    
     private void btnConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarActionPerformed
         // TODO add your handling code here:
         hotel = null;         
-        
+        hotel = daoHotel.consultar(Integer.parseInt(txtCod.getText()));
         if (hotel == null) {//não encontrou o objeto na BD
+            System.out.println("vai toma no cu");
+            txtCod.setEnabled(false);
+            txtNome.setEnabled(true);
+            txtTelefone.setEnabled(true);
+            txtEndereco.setEnabled(true);
+            txtValDiaria.setEnabled(true);
             
             btnConsultar.setEnabled(false);
             btnIncluir.setEnabled(true);
@@ -219,21 +233,23 @@ public class GuiCadastroHotel extends javax.swing.JFrame {
 
     private void btnIncluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIncluirActionPerformed
         // TODO add your handling code here:
-        hotel = null;         
-        
-        if (hotel == null) {//não encontrou o objeto na BD
-                
-            btnConsultar.setEnabled(false);
-            btnIncluir.setEnabled(true);
-            btnAlterar.setEnabled(false);
-            btnExcluir.setEnabled(false);
-        } else {//encontrou o objeto na BD
-            
-            btnConsultar.setEnabled(false);
-            btnIncluir.setEnabled(false);
-            btnAlterar.setEnabled(true);
-            btnExcluir.setEnabled(true);
-        }
+       hotel = new Hotel(Integer.parseInt(txtCod.getText()), txtNome.getText());
+       hotel.setEndereco(txtEndereco.getText());
+       hotel.setTelefone(txtTelefone.getText());
+       daoHotel.inserir(hotel);
+         
+       //Incializando a GUI 
+       txtCod.setText(null);
+       txtNome.setText(null); 
+       txtEndereco.setText(null);
+       txtTelefone.setText(null);
+       txtCod.setEnabled(true);
+       txtNome.setEnabled(false);
+       txtTelefone.setEnabled(false);
+       txtEndereco.setEnabled(false);
+       txtCod.requestFocus();        
+       btnConsultar.setEnabled(true);
+       btnIncluir.setEnabled(false);
     }//GEN-LAST:event_btnIncluirActionPerformed
 
     private void btnAlterarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAlterarActionPerformed
@@ -263,6 +279,14 @@ public class GuiCadastroHotel extends javax.swing.JFrame {
         // TODO add your handling code here:
         dispose();
     }//GEN-LAST:event_btnSairActionPerformed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+
+       prepCon = new PreparaConexao("BD2421009","BD2421009");       
+       prepCon.setDriver("oracle.jdbc.driver.OracleDriver");
+       prepCon.setConnectionString("jdbc:oracle:thin:@192.168.1.6:1521:xe");
+       daoHotel = new DaoHotel(prepCon.abrirConexao());  
+    }//GEN-LAST:event_formWindowOpened
 
     /**
      * @param args the command line arguments
@@ -320,6 +344,6 @@ public class GuiCadastroHotel extends javax.swing.JFrame {
     private javax.swing.JTextField txtValDiaria;
     // End of variables declaration//GEN-END:variables
     private Hotel hotel; 
-    private DaoReserva daoHotel;   
+    private DaoHotel daoHotel;   
     private PreparaConexao prepCon; 
 }
