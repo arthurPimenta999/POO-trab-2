@@ -16,13 +16,15 @@ public class Hotel {
   private int codigo;
   private String nome, endereco, telefone;
   private double valorDiaria, totalFaturamento;
-  private ArrayList<Reserva> reservas; 
+  private ArrayList<Reserva> reservas;
 
   // ===== CONSTRUTOR =====
 
   public Hotel(int codigo, String nome) {
     this.codigo = codigo;
     this.nome = nome;
+
+    this.reservas = new ArrayList<Reserva>();
   }
 
   // ===== GETTERS ====
@@ -43,12 +45,12 @@ public class Hotel {
     return telefone;
   }
 
-  public double getValorDiaria() {
-    return valorDiaria;
+  public String getValorDiaria() {
+    return String.valueOf(valorDiaria);
   }
 
-  public double getTotalFaturamento() {
-    return totalFaturamento;
+  public String getTotalFaturamento() {
+    return String.valueOf(totalFaturamento);
   }
 
   // ===== SETTERS ====
@@ -65,13 +67,17 @@ public class Hotel {
     this.telefone = telefone;
   }
 
-  public void setValorDiaria(double valorDiaria) {
-    this.valorDiaria = valorDiaria;
+  public void setValorDiaria(String valorDiaria) {
+    this.valorDiaria = Double.parseDouble(valorDiaria);
   }
 
   // ===== METODOS =====
 
   public void addValorHospedagem(double valor) {
     this.totalFaturamento += valor;
+  }
+
+  public void addReserva(Reserva reserva) {
+    this.reservas.add(reserva);
   }
 }

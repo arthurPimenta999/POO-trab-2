@@ -42,18 +42,24 @@ public class Data {
     return dia + "/" + mes + "/" + ano;
   }
 
-  public int calcDiasCorridos(Data dataFinal) {
-    return (
-      (dataFinal.dia - this.dia) +
-      (dataFinal.mes - this.mes) * 30 +
-      (dataFinal.ano - this.ano) * 365
-    );
+  public int calcDiasCorridos() {
+    boolean isBissexto = (ano % 4 == 0 && ano % 100 != 0) || (ano % 400 == 0);
+    int[] diasDosMeses = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+    int somaMesesAnteriores = 0;
+    for (int i = 0; i < mes - 1 - 1; i++) {
+      somaMesesAnteriores += diasDosMeses[i];
+    }
+
+    double totalDias = ((ano - 1) - 1900) * 365.25 + somaMesesAnteriores + dia;
+
+    if (isBissexto && mes > 2) {
+      totalDias += 1;
+    }
+
+    return (int) totalDias;
   }
 
-  public int subtrairDatas(Data dataFinal) {
-    int dias1 = this.dia + this.mes * 30 + this.ano * 365;
-    int dias2 = dataFinal.dia + dataFinal.mes * 30 + dataFinal.ano * 365;
-
-    return dias1 - dias2;
+  public int subtrairDatas(Data dataInicial) {
+    return this.calcDiasCorridos() - dataInicial.calcDiasCorridos();
   }
 }
