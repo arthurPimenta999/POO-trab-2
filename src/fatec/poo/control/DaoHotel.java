@@ -26,7 +26,9 @@ public class DaoHotel {
         objHotel = new Hotel(rs.getInt("Codigo_Hot"), rs.getString("Nome_Hot"));
         objHotel.setEndereco(rs.getString("Endereco_Hot"));
         objHotel.setTelefone(rs.getString("Telefone_Hot"));
-        objHotel.setValorDiaria(rs.getString("ValorDiaria_Hot"));
+        objHotel.setValorDiaria(
+          String.valueOf(rs.getDouble("ValorDiaria_Hot"))
+        );
         objHotel.addValorHospedagem(rs.getDouble("TotalFaturamento_Hot"));
       }
     } catch (SQLException ex) {
@@ -45,7 +47,7 @@ public class DaoHotel {
       ps.setString(2, objHotel.getNome());
       ps.setString(3, objHotel.getEndereco());
       ps.setString(4, objHotel.getTelefone());
-      ps.setString(5, objHotel.getValorDiaria());
+      ps.setDouble(5, Double.parseDouble(objHotel.getValorDiaria()));
       ps.setDouble(6, 0.0);
 
       ps.execute();
@@ -68,8 +70,8 @@ public class DaoHotel {
       ps.setString(1, hotel.getNome());
       ps.setString(2, hotel.getEndereco());
       ps.setString(3, hotel.getTelefone());
-      ps.setString(4, hotel.getValorDiaria());
-      ps.setString(5, hotel.getTotalFaturamento());
+      ps.setDouble(4, Double.parseDouble(hotel.getValorDiaria()));
+      ps.setDouble(5, Double.parseDouble(hotel.getTotalFaturamento()));
       ps.setInt(6, hotel.getCodigo());
 
       ps.execute();
