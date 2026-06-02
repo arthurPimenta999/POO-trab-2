@@ -236,6 +236,7 @@ public class GuiCadastroHotel extends javax.swing.JFrame {
        hotel = new Hotel(Integer.parseInt(txtCod.getText()), txtNome.getText());
        hotel.setEndereco(txtEndereco.getText());
        hotel.setTelefone(txtTelefone.getText());
+       hotel.setValorDiaria(txtValDiaria.getText());
        daoHotel.inserir(hotel);
          
        //Incializando a GUI 
@@ -243,10 +244,13 @@ public class GuiCadastroHotel extends javax.swing.JFrame {
        txtNome.setText(null); 
        txtEndereco.setText(null);
        txtTelefone.setText(null);
+       txtValDiaria.setText(null);
+       
        txtCod.setEnabled(true);
        txtNome.setEnabled(false);
        txtTelefone.setEnabled(false);
        txtEndereco.setEnabled(false);
+       txtValDiaria.setEnabled(false);
        txtCod.requestFocus();        
        btnConsultar.setEnabled(true);
        btnIncluir.setEnabled(false);
@@ -282,9 +286,9 @@ public class GuiCadastroHotel extends javax.swing.JFrame {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
 
-       prepCon = new PreparaConexao("BD2421009","BD2421009");       
+       prepCon = new PreparaConexao("C##ESTUDANTE","14112005");       
        prepCon.setDriver("oracle.jdbc.driver.OracleDriver");
-       prepCon.setConnectionString("jdbc:oracle:thin:@192.168.1.6:1521:xe");
+       prepCon.setConnectionString("jdbc:oracle:thin:@127.0.0.1:1521:xe");
        daoHotel = new DaoHotel(prepCon.abrirConexao());  
     }//GEN-LAST:event_formWindowOpened
 
