@@ -18,8 +18,6 @@ public class Reserva {
   private double valorHosped;
   private Hotel hotel;
 
-  private Hotel hotel;
-
   // ===== CONSTRUTOR =====
 
   public Reserva(int codigo, String nomeHosp, Data dataEntrada) {
