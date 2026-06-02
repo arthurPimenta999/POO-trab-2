@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package fatec.poo.control;
 
 import fatec.poo.model.Hotel;
@@ -10,10 +6,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-/**
- *
- * @author nicol
- */
 public class DaoHotel {
 
   private Connection conn;
@@ -24,10 +16,9 @@ public class DaoHotel {
 
   public Hotel consultar(int codigo) {
     Hotel objHotel = null;
-
     PreparedStatement ps;
     try {
-      ps = conn.prepareStatement("SELECT * from tblHotel where Codigo_Hot = ?");
+      ps = conn.prepareStatement("SELECT * FROM tblHotel WHERE Codigo_Hot = ?");
       ps.setInt(1, codigo);
       ResultSet rs = ps.executeQuery();
 
@@ -35,28 +26,29 @@ public class DaoHotel {
         objHotel = new Hotel(rs.getInt("Codigo_Hot"), rs.getString("Nome_Hot"));
         objHotel.setEndereco(rs.getString("Endereco_Hot"));
         objHotel.setTelefone(rs.getString("Telefone_Hot"));
-        objHotel.setValorDiaria(rs.getString("TotalFaturamento_Hot"));
+        objHotel.setValorDiaria(rs.getString("ValorDiaria_Hot"));
         objHotel.addValorHospedagem(rs.getDouble("TotalFaturamento_Hot"));
       }
     } catch (SQLException ex) {
       System.out.println(ex.toString());
     }
-    return (objHotel);
+    return objHotel;
   }
 
   public void inserir(Hotel objHotel) {
     PreparedStatement ps;
     try {
       ps = conn.prepareStatement(
-        "INSERT INTO tblHotel(Codigo_Hot, Nome_Hot, Endereco_Hot, Telefone_Hot, TotalFaturamento_Hot) VALUES(?,?,?,?,?)"
+        "INSERT INTO tblHotel(Codigo_Hot, Nome_Hot, Endereco_Hot, Telefone_Hot, ValorDiaria_Hot, TotalFaturamento_Hot) VALUES(?,?,?,?,?,?)"
       );
       ps.setInt(1, objHotel.getCodigo());
       ps.setString(2, objHotel.getNome());
       ps.setString(3, objHotel.getEndereco());
       ps.setString(4, objHotel.getTelefone());
       ps.setString(5, objHotel.getValorDiaria());
+      ps.setDouble(6, 0.0);
 
-      ps.execute(); //envia a instrução SQL para o SGBD
+      ps.execute();
     } catch (SQLException ex) {
       System.out.println(ex.toString());
     }
@@ -66,19 +58,21 @@ public class DaoHotel {
     PreparedStatement ps;
     try {
       ps = conn.prepareStatement(
-        "UPDATE tblHotel set Nome_Hot = ?, " +
-          "Endereco_Hot = ? " +
-          "Telefone_Hot = ? " +
+        "UPDATE tblHotel SET Nome_Hot = ?, " +
+          "Endereco_Hot = ?, " +
+          "Telefone_Hot = ?, " +
+          "ValorDiaria_Hot = ?, " +
           "TotalFaturamento_Hot = ? " +
-          "where Codigo_Hot = ?"
+          "WHERE Codigo_Hot = ?"
       );
-
       ps.setString(1, hotel.getNome());
       ps.setString(2, hotel.getEndereco());
       ps.setString(3, hotel.getTelefone());
       ps.setString(4, hotel.getValorDiaria());
+      ps.setString(5, hotel.getTotalFaturamento());
+      ps.setInt(6, hotel.getCodigo());
 
-      ps.execute(); //Envia a instrução SQL para o SGBD
+      ps.execute();
     } catch (SQLException ex) {
       System.out.println(ex.toString());
     }
@@ -87,11 +81,9 @@ public class DaoHotel {
   public void excluir(Hotel hotel) {
     PreparedStatement ps;
     try {
-      ps = conn.prepareStatement("DELETE FROM tblHotel where Codigo_Hot = ?");
-
+      ps = conn.prepareStatement("DELETE FROM tblHotel WHERE Codigo_Hot = ?");
       ps.setInt(1, hotel.getCodigo());
-
-      ps.execute(); //Envia a instrução SQL para o SGBD
+      ps.execute();
     } catch (SQLException ex) {
       System.out.println(ex.toString());
     }

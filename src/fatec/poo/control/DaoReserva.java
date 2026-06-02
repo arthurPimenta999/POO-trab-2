@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package fatec.poo.control;
 
 import fatec.poo.model.Data;
@@ -12,10 +8,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-/**
- *
- * @author nicol
- */
 public class DaoReserva {
 
   private Connection conn;
@@ -26,11 +18,10 @@ public class DaoReserva {
 
   public Reserva consultar(int codigo) {
     Reserva objReserva = null;
-
     PreparedStatement ps;
     try {
       ps = conn.prepareStatement(
-        "SELECT * from tblReserva where Codigo_Res = ?"
+        "SELECT * FROM tblReserva WHERE Codigo_Res = ?"
       );
       ps.setInt(1, codigo);
       ResultSet rs = ps.executeQuery();
@@ -38,12 +29,11 @@ public class DaoReserva {
       if (rs.next()) {
         String dataEntradaStr = rs.getString("DataEntrada_Res");
         String[] partesData = dataEntradaStr.split("/");
-        int dia = Integer.parseInt(partesData[0]);
-        int mes = Integer.parseInt(partesData[1]);
-        int ano = Integer.parseInt(partesData[2]);
-
-        // Instancia o objeto Data da model
-        Data dataEntrada = new Data(dia, mes, ano);
+        Data dataEntrada = new Data(
+          Integer.parseInt(partesData[0]),
+          Integer.parseInt(partesData[1]),
+          Integer.parseInt(partesData[2])
+        );
 
         objReserva = new Reserva(
           rs.getInt("Codigo_Res"),
@@ -51,40 +41,45 @@ public class DaoReserva {
           dataEntrada
         );
 
-        objReserva
-          .getHotel()
-          .addValorHospedagem(rs.getDouble("ValorHosped_Res"));
+        int codigoHotel = rs.getInt("Codigo_Hot");
+        DaoHotel daoHotel = new DaoHotel(conn);
+        Hotel objHotel = daoHotel.consultar(codigoHotel);
+        objReserva.setHotel(objHotel);
 
-        if(rs.getString("DataSaida_Res") != null) {
-            String dataSaidaStr = rs.getString("DataSaida_Res");
-            String[] partesSaida = dataSaidaStr.split("/");
-            Data dataSaida = new Data (
-                Integer.parseInt(partesSaida[0]),
-                Integer.parseInt(partesSaida[1]),
-                Integer.parseInt(partesSaida[2])
-            );
-            objReserva.setDataSaida (dataSaida)
+        double valorHosped = rs.getDouble("ValorHosped_Res");
+        if (!rs.wasNull() && objHotel != null) {
+          objHotel.addValorHospedagem(valorHosped);
+        }
+
+        String dataSaidaStr = rs.getString("DataSaida_Res");
+        if (dataSaidaStr != null && !dataSaidaStr.trim().isEmpty()) {
+          String[] partesSaida = dataSaidaStr.split("/");
+          Data dataSaida = new Data(
+            Integer.parseInt(partesSaida[0]),
+            Integer.parseInt(partesSaida[1]),
+            Integer.parseInt(partesSaida[2])
+          );
+          objReserva.encerrarReserva(dataSaida);
         }
       }
     } catch (SQLException ex) {
       System.out.println(ex.toString());
     }
-    return (objReserva);
+    return objReserva;
   }
 
   public void inserir(Reserva objReserva) {
     PreparedStatement ps;
     try {
       ps = conn.prepareStatement(
-        "INSERT INTO tblReserva(Codigo_Hot, Nome_Hot, Endereco_Hot, Telefone_Hot, TotalFaturamento_Hot) VALUES(?,?,?,?,?)"
+        "INSERT INTO tblReserva(Codigo_Res, NomeHosp_Res, DataEntrada_Res, Codigo_Hot) VALUES(?,?,?,?)"
       );
-      ps.setInt(1, objReserva.getHotel().getCodigo());
-      ps.setString(2, objReserva.getHotel().getNome());
-      ps.setString(3, objReserva.getHotel().getEndereco());
-      ps.setString(4, objReserva.getHotel().getTelefone());
-      ps.setString(5, objReserva.getHotel().getTotalFaturamento());
+      ps.setInt(1, objReserva.getCodigo());
+      ps.setString(2, objReserva.getNomeHosp());
+      ps.setString(3, objReserva.getDataEntrada().obterData());
+      ps.setInt(4, objReserva.getHotel().getCodigo());
 
-      ps.execute(); //envia a instrução SQL para o SGBD
+      ps.execute();
     } catch (SQLException ex) {
       System.out.println(ex.toString());
     }
@@ -94,19 +89,18 @@ public class DaoReserva {
     PreparedStatement ps;
     try {
       ps = conn.prepareStatement(
-        "UPDATE tblReserva set Nome_Hot = ?, " +
-          "Endereco_Hot = ? " +
-          "Telefone_Hot = ? " +
-          "TotalFaturamento_Hot = ? " +
-          "where Codigo_Hot = ?"
+        "UPDATE tblReserva SET DataSaida_Res = ?, ValorHosped_Res = ? WHERE Codigo_Res = ?"
       );
-      ps.setString(1, objReserva.getHotel().getNome());
-      ps.setString(2, objReserva.getHotel().getEndereco());
-      ps.setString(3, objReserva.getHotel().getTelefone());
-      ps.setString(4, objReserva.getHotel().getTotalFaturamento());
-      ps.setInt(5, objReserva.getHotel().getCodigo());
 
-      ps.execute(); //Envia a instrução SQL para o SGBD
+      if (objReserva.getDataSaida() != null) {
+        ps.setString(1, objReserva.getDataSaida().obterData());
+      } else {
+        ps.setNull(1, java.sql.Types.VARCHAR);
+      }
+      ps.setDouble(2, objReserva.getValorHosped());
+      ps.setInt(3, objReserva.getCodigo());
+
+      ps.execute();
     } catch (SQLException ex) {
       System.out.println(ex.toString());
     }
@@ -115,10 +109,10 @@ public class DaoReserva {
   public void excluir(Reserva objReserva) {
     PreparedStatement ps;
     try {
-      ps = conn.prepareStatement("DELETE FROM tblReserva where Codigo_Hot = ?");
-
+      ps = conn.prepareStatement("DELETE FROM tblReserva WHERE Codigo_Res = ?");
       ps.setInt(1, objReserva.getCodigo());
-      ps.execute(); //Envia a instrução SQL para o SGBD
+
+      ps.execute();
     } catch (SQLException ex) {
       System.out.println(ex.toString());
     }
